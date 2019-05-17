@@ -1,0 +1,177 @@
+Actions:
+1) Initiate software
+- Setting organization and application names (important to create settins file)
+- Parse command inputs
+- Create main Window
+  - Create Controller
+  - Create ControlsWidget
+  - Create LabelsWidget
+  - Create GraphicsView (logo)
+  - Create GraphicsScene
+  - Create ImageViewer
+    - Create ImageWidget
+      - Create GraphicsView (image)
+  - Adding docks to main window
+  - Setting logo
+  - Creating MainWindow connections
+  - Reading settings
+  - Creating actions (open recent files)
+  - Updating MW elements (show/hide)
+    - Update label widget and message box (if has image)
+- Show main window
+- Execute app
+
+2) Set logo
+
+3) Parse input command line
+
+4) (a) First image, (b) Other images
+Load image
+- Load Image by controller
+  - Update rescent image list.
+- (b) Clear image
+  - (b) Delete NavigationTool
+- Hide LabelsDock
+- Set GuiImage to Controller
+  - Label -> set to false
+  - Initialize IV
+    - Create NavigationTool.
+    - Set slice range.
+    - Set overlay position.
+  - Set Pixmaps
+  - Connect GuiImage::imageUpdated with Controller::updatePixMap
+  - Update (show/hide) MainMenu UI elements
+    - UpdateWidgets
+      - Set GuiImage to LabelWidget
+      - Write to message bar
+    - Sets window title
+  - emitting currentImageChanged
+    - Set ControlsWidget Brightness and Contrast values
+    - IV::changeImage
+      - Set IW slice position.
+      - Resize IW to IV size
+      - changePixmap
+	- Set IW slice
+	- Fit GS to GV area (Look for resize bug here. It is related to image dimensions. For different dimensions, resize is bugged.)
+- Updating current image folder in settings.
+- Show recent label list.
+
+5) Load label
+- controller::addLabel
+  - GI::addLabel
+    - load image.
+    - set maximum intensity
+    - Compute label colors
+    - emit pixmapUpdated
+      - Controller::updatePixmap
+      	- setPixmap
+	  - Set CW brightness and contrast sliders updated.
+	    - changePixmap
+	      - Set IW slice
+              - Fit GS to GV area (Look for resize bug here. It is related to image dimensions. For different dimensions, resize is bugged.)
+	  - Update MW widgets.
+
+- LW - needUpdate
+- show Label dock
+- set recent label filename
+- update recent label actions
+- update label folder in settings
+
+6) Show/hide overlay
+- Controller::setpixmap (to force update)
+
+7) Mouse click in canvas: (a) Move overlay
+- click, drag, release - IV
+- timer for draging: 10.
+  - click, drag, release - NavigationTool
+    - Change other slices coordinates
+    - updateOverlay coordinates.
+- Set mouseclick message bar.
+
+8) Change slice by slider or spinbox
+- set slice in GuiImage.
+  - pixmapUpdate
+  - Controller::updatePixmap
+    - setpixmap - set image and label pixmap
+    - emit pixmapUpdated
+      - update brightness and contrast widgets.
+      - update pixmap in GS and resizing.
+      - update label dock and message bar.
+
+9) (a) Rotate, (b) flip x, (c) flip y slice:
+- update overlay position.
+  - update QGraphicsScene -> Parece errado!!!! Não devia atualizar agora. Será esse o problema?
+- emit (a) rotate (b) flipv (c) fliph
+  - Controller:: (a) rotate90, (b) flipv (c) fliph
+    - GI:: (a) rotate90, (b) flipv (c) fliph
+      - update orientation.
+      - emit pixmapUpdated
+        - update brightness and contrast widgets.
+        - update pixmap in GS and resizing.
+        - update label dock and message bar.
+
+10) Change view axis (a) Axial (b) Coronal (c) Sagital
+- Set axis in IV passing by controller -> tool -> IV
+- emit controller::updatepixmap
+  -  setPixmap
+    - Set CW brightness and contrast sliders updated
+      - changePixmap
+        - Set IW slice
+        - Fit GS to GV area (Look for resize bug here. It is related to image dimensions. For different dimensions, resize is bugged.)
+    - Update MW widgets
+
+11) Update intensities (a) Brightness (b) Contrast
+- (a) setBrightness (b) setContrast
+  - GI::pixmapUpdated
+  - Controller updatePixmap
+    -  setPixmap
+      - Set CW brightness and contrast sliders updated
+        - changePixmap
+          - Set IW slice
+          - Fit GS to GV area (Look for resize bug here. It is related to image dimensions. For different dimensions, resize is bugged.)
+      - Update MW widgets
+
+12) Show/hide docks (a) Controls (b) Labels
+
+13) Update label display parameter (a) Translucence (b) Type (c) Color
+- (a) GI::setTranslucenceFactor (b) GI::setLabelDisplayType (c) GI::setLabelDisplayColor
+  - emit GI::pixmapUpdated
+    - Controller updatePixmap
+    -  setPixmap
+      - Set CW brightness and contrast sliders updated
+        - changePixmap
+          - Set IW slice
+          - Fit GS to GV area (Look for resize bug here. It is related to image dimensions. For different dimensions, resize is bugged.)
+      - Update MW widgets
+
+14) Change label color
+- Get new color
+- Set new color
+- emit LW::updatePixmap
+  - Controller updatePixmap
+  -  setPixmap
+    - Set CW brightness and contrast sliders updated
+      - changePixmap
+        - Set IW slice
+        - Fit GS to GV area (Look for resize bug here. It is related to image dimensions. For different dimensions, resize is bugged.)
+    - Update MW widgets
+
+15) Clear label
+- GI::RemoveLabel.
+  - Update label pixmaps
+  - emit pixmapUpdated
+    - Controller updatePixmap
+      -  setPixmap
+        - Set CW brightness and contrast sliders updated
+          - changePixmap
+            - Set IW slice
+            - Fit GS to GV area (Look for resize bug here. It is related to image dimensions. For different dimensions, resize is bugged.)
+        - Update MW widgets
+
+16) Export pixmap
+- Export dialog
+- IV export bitmap.
+
+17) Image info popup window
+
+
